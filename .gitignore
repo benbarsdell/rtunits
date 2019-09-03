@@ -1,0 +1,10 @@
+# Backup files
+*~
+
+# Compiled files
+*.so
+*.o*
+*.lo
+*.la
+*.a
+build
