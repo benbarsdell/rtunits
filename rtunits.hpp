@@ -768,6 +768,7 @@ class Quantity {
   bool operator>=(const Quantity& rhs) const { return !(*this < rhs); }
 
   Quantity operator-() const { return Quantity(-value_, dims_); }
+  Quantity operator+() const { return Quantity(+value_, dims_); }
 
   Quantity& operator*=(const Quantity& rhs) {
     dims_ *= rhs.dims_;

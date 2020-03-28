@@ -69,6 +69,7 @@ TEST(UnitsTest, QuantityArithmetic) {
   for (const auto& unit_item : Quantity64::unit_symbol_map()) {
     const Quantity64& q = unit_item.second;
     EXPECT_QUANT_EQ(q * -1., -q);
+    EXPECT_QUANT_EQ(q * +1., +q);
     EXPECT_QUANT_EQ(q / q, unity);
     EXPECT_QUANT_EQ(q.squared() / q.squared(), unity);
     EXPECT_QUANT_EQ(q.cubed() / q.cubed(), unity);
