@@ -31,9 +31,9 @@
 #define RTUNITS_USE_EXCEPTIONS 1
 #include "rtunits.hpp"
 
-#include "gtest/gtest.h"
-
 #include <unordered_set>
+
+#include "gtest/gtest.h"
 
 using namespace rtunits;
 
@@ -173,8 +173,8 @@ TEST(UnitsTest, Sortable) {
   EXPECT_EQ(Quantity64(symbol), quantity) \
       << "where " #symbol " = \"" << symbol << "\""
 
-#define EXPECT_PARSE_THROW_Q(symbol)                            \
-  EXPECT_THROW(auto q = Quantity64(symbol), QuantityParseError) \
+#define EXPECT_PARSE_THROW_Q(symbol)                         \
+  EXPECT_THROW((void)Quantity64(symbol), QuantityParseError) \
       << "where " #symbol " = \"" << symbol << "\""
 
 void test_basic_parsing_with_div(const std::string& symbol,
