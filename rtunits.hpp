@@ -429,7 +429,8 @@ class Quantity {
   // Misc units.
   static Quantity week() { return T(7) * day(); }
   static Quantity pounds_per_square_inch() { return T(6.894757e3) * pascal(); }
-  static Quantity nutritional_calorie() { return T(4.186e3) * joule(); }
+  static Quantity thermochemical_calorie() { return T(4.184) * joule(); }
+  static Quantity nutritional_calorie() { return T(4.184e3) * joule(); }
   static Quantity curie() { return T(3.7e10) * becquerel(); }
   static Quantity dobson_unit() {
     return T(0.4462e-3) * mole() / meter().squared();
@@ -616,6 +617,7 @@ class Quantity {
         // Misc units.
         {"wk", week()},
         {"psi", pounds_per_square_inch()},
+        {"cal", thermochemical_calorie()},
         {"Cal", nutritional_calorie()},
         {"Ci", curie()},
         {"DU", dobson_unit()},
