@@ -331,7 +331,10 @@ class Quantity {
  public:
   typedef T value_type;
 
-  static value_type pi() { return T(3.1415926535897932384626L); }
+  static value_type pi() {
+    return T(
+        3.14159265358979323846264338327950288419716939937510582097494459230781641L);
+  }
   static value_type tau() { return T(2) * pi(); }
 
   // SI base units.
