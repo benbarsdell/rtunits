@@ -445,6 +445,33 @@ class Quantity {
   static Quantity british_thermal_units() {
     return T(1.05505585262e3) * joule();
   }
+  static Quantity tnt() {
+    return T(1e9) * thermochemical_calorie() / metric_tonne();
+  }
+  static Quantity quad() { return T(1e15) * british_thermal_units(); }
+  static Quantity foe() { return T(1e51) * erg(); }
+  static Quantity crab() { return T(2.4e-11) * watt() / meter().squared(); }
+  static Quantity langley() {
+    return T(1e4) * thermochemical_calorie() / meter().squared();
+  }
+  static Quantity milli_earth_rate_unit() {
+    return T(0.015) * degree() / hour();
+  }
+  static Quantity meter_water_equivalent() {
+    return T(1e3) * kilogram() / meter().squared();
+  }
+  static Quantity strontium_unit() { return T(1.065e-12) * gray(); }
+  static Quantity banana_equivalent_dose() { return T(1e-7) * sievert(); }
+  static Quantity furman() { return turn() / T(65536.); }
+  static Quantity gradian() { return turn() / T(400.); }
+  static Quantity shake() { return T(1e-8) * second(); }
+  static Quantity mars_day() { return T(88775) * second(); }
+  static Quantity galactic_year() { return T(250e6) * year(); }
+  static Quantity kermit() { return T(24 * 60 * 60 / 100.) * second(); }
+  static Quantity moment() { return T(90) * second(); }
+  static Quantity ton_of_refrigeration() {
+    return T(12e3) * british_thermal_units() / hour();
+  }
   static Quantity revolutions_per_minute() { return turn() / minute(); }
   static Quantity counts_per_second() { return second().reciprocal(); }
   static Quantity pound() { return T(0.45359237) * kilogram(); }
@@ -457,6 +484,7 @@ class Quantity {
   static Quantity foot() { return T(12) * inch(); }
   static Quantity yard() { return T(3) * foot(); }
   static Quantity mile() { return T(1760) * yard(); }
+  static Quantity square() { return T(100.) * foot().squared(); }
   static Quantity standard_gravity() {
     return T(9.806650) * meter() / second().squared();
   }
@@ -630,6 +658,24 @@ class Quantity {
         {"cyc", turn()},
         {"BTU", british_thermal_units()},
         {"Btu", british_thermal_units()},
+        {"TNT", tnt()},
+        {"Q", quad()},
+        {"foe", foe()},
+        {"Crab", crab()},
+        {"Ly", langley()},
+        {"MERU", milli_earth_rate_unit()},
+        {"mwe", meter_water_equivalent()},
+        {"SU", strontium_unit()},
+        {"BED", banana_equivalent_dose()},
+        {"furman", furman()},
+        {"gradian", gradian()},
+        {"gon", gradian()},
+        {"shake", shake()},
+        {"sol", mars_day()},
+        {"GY", galactic_year()},
+        {"Kermit", kermit()},
+        {"moment", moment()},
+        {"TOR", ton_of_refrigeration()},
         {"rpm", revolutions_per_minute()},
         {"cps", counts_per_second()},
         {"lb", pound()},
@@ -644,6 +690,7 @@ class Quantity {
         {"yd", yard()},
         {"mile", mile()},
         {"mi", mile()},
+        {"square", square()},
         {"g_0", standard_gravity()},
         {"mu_0", vacuum_permeability()},
         {"epsilon_0", vacuum_permittivity()},
