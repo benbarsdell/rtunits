@@ -247,7 +247,7 @@ class Dimensions {
                         bool write_if_none = false) const {
     std::stringstream stream;
     auto write_unit = [&stream](const std::string& symbol, int exponent,
-                                bool with_space = true) {
+                                bool with_space) {
       if (exponent) {
         if (with_space) {
           stream << " ";
