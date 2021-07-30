@@ -356,7 +356,7 @@ class Quantity {
   static Quantity joule() { return newton() * meter(); }
   static Quantity watt() { return joule() / second(); }
   static Quantity coulomb() { return ampere() * second(); }
-  static Quantity volt() { return watt() / second(); }
+  static Quantity volt() { return watt() / ampere(); }
   static Quantity farad() { return coulomb() / volt(); }
   static Quantity ohm() { return volt() / ampere(); }
   static Quantity siemens() { return ohm().reciprocal(); }
@@ -375,7 +375,7 @@ class Quantity {
   static Quantity minute() { return T(60) * second(); }
   static Quantity hour() { return T(60) * minute(); }
   static Quantity day() { return T(24) * hour(); }
-  static Quantity astronomical_unit() { return T(149597870700) * meter(); }
+  static Quantity astronomical_unit() { return T(149597870700ll) * meter(); }
   static Quantity degree() { return pi() / T(180) * radian(); }
   static Quantity arc_minute() { return degree() / T(60); }
   static Quantity arc_second() { return arc_minute() / T(60); }
