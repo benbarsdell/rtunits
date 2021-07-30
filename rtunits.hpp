@@ -902,10 +902,10 @@ class Quantity {
 
   Quantity power(value_type n) const {
     // Only integer exponents are supported.
-    Dimensions::value_type ni(n);
+    auto ni = static_cast<Dimensions::value_type>(n);
     UNITS_ASSERT(ni == n, QuantityError("Exponent is not representable: " +
                                         std::to_string(n)));
-    return Quantity(std::pow(value_, n), dims_.power(n));
+    return Quantity(std::pow(value_, ni), dims_.power(ni));
   }
 
   Quantity fractional_power(Dimensions::value_type d) const {

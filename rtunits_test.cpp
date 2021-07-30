@@ -56,12 +56,12 @@ TEST(UnitsTest, DimensionsArithmetic) {
   }
 }
 
-#define EXPECT_QUANT_EQ(_lhs, _rhs)                        \
-  do {                                                     \
-    const auto& lhs = (_lhs);                              \
-    const auto& rhs = (_rhs);                              \
-    EXPECT_EQ((lhs).dimensions(), (rhs).dimensions());     \
-    EXPECT_FLOAT_EQ((lhs).magnitude(), (rhs).magnitude()); \
+#define EXPECT_QUANT_EQ(_lhs, _rhs)                         \
+  do {                                                      \
+    const auto& lhs = (_lhs);                               \
+    const auto& rhs = (_rhs);                               \
+    EXPECT_EQ((lhs).dimensions(), (rhs).dimensions());      \
+    EXPECT_DOUBLE_EQ((lhs).magnitude(), (rhs).magnitude()); \
   } while (0)
 
 TEST(UnitsTest, QuantityArithmetic) {

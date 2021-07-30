@@ -7,7 +7,7 @@ if (MSVC)
   # TODO: debug/release mode flags.
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-      -Wall \
+      -Wall -Wconversion -Wextra -Wshadow -Wpedantic \
       -fvisibility=hidden \
       -fmessage-length=80")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
