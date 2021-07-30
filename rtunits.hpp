@@ -766,7 +766,8 @@ class Quantity {
 
   explicit Quantity(const std::string& units) {
     bool units_parsed_successfully = parse_units(units, this);
-    assert(units_parsed_successfully);
+    UNITS_ASSERT(units_parsed_successfully,
+                 QuantityError("Failed to parse units: " + units));
     (void)units_parsed_successfully;
   }
 
