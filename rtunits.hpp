@@ -141,6 +141,24 @@ class Dimensions {
   static constexpr Dimensions Amount() {
     return Dimensions(0, 0, 0, 0, 0, 0, 1);
   }
+  static constexpr Dimensions Area() { return Length().squared(); }
+  static constexpr Dimensions Volume() { return Length().cubed(); }
+  static constexpr Dimensions Density() { return Mass() / Volume(); }
+  static constexpr Dimensions Frequency() { return Time().reciprocal(); }
+  static constexpr Dimensions Speed() { return Length() / Time(); }
+  static constexpr Dimensions Acceleration() {
+    return Length() / Time().squared();
+  }
+  static constexpr Dimensions Energy() { return Mass() * Speed().squared(); }
+  static constexpr Dimensions Power() { return Energy() / Time(); }
+  static constexpr Dimensions Force() { return Mass() * Acceleration(); }
+  static constexpr Dimensions Momentum() { return Mass() * Speed(); }
+  static constexpr Dimensions Pressure() { return Force() / Area(); }
+  static constexpr Dimensions Voltage() { return Power() / Current(); }
+  static constexpr Dimensions Resistance() { return Voltage() / Current(); }
+  static constexpr Dimensions Charge() { return Current() * Time(); }
+  static constexpr Dimensions Capacitance() { return Charge() / Voltage(); }
+  static constexpr Dimensions Inductance() { return Resistance() * Time(); }
 
   typedef int8_t value_type;
   typedef std::array<value_type, kBaseDimensionCount> array_type;
