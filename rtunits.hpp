@@ -238,7 +238,8 @@ class Dimensions {
   constexpr const value_type& amount() const { return exponents_[kAmount]; }
 
   std::string to_string(bool write_if_none = false) const {
-    return to_string({"l", "m", "t", "I", "T", "Iv", "N"}, write_if_none);
+    return to_string({"L", "M", "T", "I", "\u03F4" /*capital Theta*/, "J", "N"},
+                     write_if_none);
   }
 
   typedef std::array<const char*, kBaseDimensionCount> SymbolArray;

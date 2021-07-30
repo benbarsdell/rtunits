@@ -119,21 +119,21 @@ TEST(UnitsTest, DimensionsToString) {
   const auto amount = Dimensions::Amount();
   EXPECT_TRUE(none.to_string().empty());
   EXPECT_EQ(none.to_string(true), "<none>");
-  EXPECT_EQ(length.to_string(), "l");
-  EXPECT_EQ(mass.to_string(), "m");
-  EXPECT_EQ(time.to_string(), "t");
+  EXPECT_EQ(length.to_string(), "L");
+  EXPECT_EQ(mass.to_string(), "M");
+  EXPECT_EQ(time.to_string(), "T");
   EXPECT_EQ(current.to_string(), "I");
-  EXPECT_EQ(temperature.to_string(), "T");
-  EXPECT_EQ(luminosity.to_string(), "Iv");
+  EXPECT_EQ(temperature.to_string(), "\u03F4" /*capital Theta*/);
+  EXPECT_EQ(luminosity.to_string(), "J");
   EXPECT_EQ(amount.to_string(), "N");
 
   const auto time_squared = time.squared();
-  EXPECT_EQ(time_squared.to_string(), "t2");
+  EXPECT_EQ(time_squared.to_string(), "T2");
   const auto inverse_time = time.reciprocal();
-  EXPECT_EQ(inverse_time.to_string(), "t-1");
+  EXPECT_EQ(inverse_time.to_string(), "T-1");
 
   const auto amount_per_time_squared = amount / time.squared();
-  EXPECT_EQ(amount_per_time_squared.to_string(), "t-2 N");
+  EXPECT_EQ(amount_per_time_squared.to_string(), "T-2 N");
 
   Dimensions::SymbolArray si_symbols = {"m", "kg", "s", "A", "K", "cd", "mol"};
   EXPECT_EQ(amount_per_time_squared.to_string(si_symbols), "s-2 mol");
