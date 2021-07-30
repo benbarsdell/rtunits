@@ -76,6 +76,12 @@
 #define UNITS_THROW(exception) ((void)0)
 #endif  // RTUNITS_USE_EXCEPTIONS
 
+#if __cplusplus >= 201402L
+#define CONSTEXPR_IF_CPP_2014 constexpr
+#else
+#define CONSTEXPR_IF_CPP_2014
+#endif
+
 namespace rtunits {
 
 namespace detail {
@@ -100,6 +106,13 @@ struct QuantityParseError : public QuantityError {
   QuantityParseError(const std::string& text) : QuantityError(text) {}
 };
 #endif
+
+// Forward declarations.
+class Dimensions;
+inline constexpr Dimensions operator*(const Dimensions& lhs,
+                                      const Dimensions& rhs);
+inline constexpr Dimensions operator/(const Dimensions& lhs,
+                                      const Dimensions& rhs);
 
 class Dimensions {
  public:
@@ -189,22 +202,44 @@ class Dimensions {
            1;
   }
 
-  // TODO: Make constexpr somehow (also outside operators).
-  Dimensions& operator*=(const Dimensions& rhs) {
-    std::transform(exponents_.begin(), exponents_.end(), rhs.exponents_.begin(),
-                   exponents_.begin(), std::plus<value_type>());
-    return *this;
+  CONSTEXPR_IF_CPP_2014 Dimensions& operator*=(const Dimensions& rhs) {
+    return *this = multiplied_by(rhs);
   }
 
-  Dimensions& operator/=(const Dimensions& rhs) {
-    std::transform(exponents_.begin(), exponents_.end(), rhs.exponents_.begin(),
-                   exponents_.begin(), std::minus<value_type>());
-    return *this;
+  CONSTEXPR_IF_CPP_2014 Dimensions& operator/=(const Dimensions& rhs) {
+    return *this = divided_by(rhs);
+  }
+
+  constexpr Dimensions multiplied_by(const Dimensions& rhs) const {
+    return Dimensions(
+        static_cast<value_type>(length() + rhs.length()),
+        static_cast<value_type>(mass() + rhs.mass()),
+        static_cast<value_type>(time() + rhs.time()),
+        static_cast<value_type>(current() + rhs.current()),
+        static_cast<value_type>(temperature() + rhs.temperature()),
+        static_cast<value_type>(luminosity() + rhs.luminosity()),
+        static_cast<value_type>(amount() + rhs.amount()));
+  }
+
+  constexpr Dimensions divided_by(const Dimensions& rhs) const {
+    return Dimensions(
+        static_cast<value_type>(length() - rhs.length()),
+        static_cast<value_type>(mass() - rhs.mass()),
+        static_cast<value_type>(time() - rhs.time()),
+        static_cast<value_type>(current() - rhs.current()),
+        static_cast<value_type>(temperature() - rhs.temperature()),
+        static_cast<value_type>(luminosity() - rhs.luminosity()),
+        static_cast<value_type>(amount() - rhs.amount()));
   }
 
   constexpr Dimensions power(value_type n) const {
-    return Dimensions(length() * n, mass() * n, time() * n, current() * n,
-                      temperature() * n, luminosity() * n, amount() * n);
+    return Dimensions(static_cast<value_type>(length() * n),
+                      static_cast<value_type>(mass() * n),
+                      static_cast<value_type>(time() * n),
+                      static_cast<value_type>(current() * n),
+                      static_cast<value_type>(temperature() * n),
+                      static_cast<value_type>(luminosity() * n),
+                      static_cast<value_type>(amount() * n));
   }
 
   constexpr Dimensions reciprocal() const { return power(-1); }
@@ -217,8 +252,13 @@ class Dimensions {
     return UNITS_ASSERT(exponents_divisible_by(d),
                         DimensionError("Cannot take root-" + std::to_string(d) +
                                        " of Dimensions " + to_string(true))),
-           Dimensions(length() / d, mass() / d, time() / d, current() / d,
-                      temperature() / d, luminosity() / d, amount() / d);
+           Dimensions(static_cast<value_type>(length() / d),
+                      static_cast<value_type>(mass() / d),
+                      static_cast<value_type>(time() / d),
+                      static_cast<value_type>(current() / d),
+                      static_cast<value_type>(temperature() / d),
+                      static_cast<value_type>(luminosity() / d),
+                      static_cast<value_type>(amount() / d));
   }
 
   constexpr Dimensions sqrt() const { return fractional_power(2); }
@@ -301,23 +341,24 @@ class Dimensions {
   value_type padding_byte_ = 0;
 };
 
-inline Dimensions operator*(const Dimensions& lhs, const Dimensions& rhs) {
-  Dimensions tmp(lhs);
-  return tmp *= rhs;
+inline constexpr Dimensions operator*(const Dimensions& lhs,
+                                      const Dimensions& rhs) {
+  return lhs.multiplied_by(rhs);
 }
 
-inline Dimensions operator/(const Dimensions& lhs, const Dimensions& rhs) {
-  Dimensions tmp(lhs);
-  return tmp /= rhs;
+inline constexpr Dimensions operator/(const Dimensions& lhs,
+                                      const Dimensions& rhs) {
+  return lhs.divided_by(rhs);
 }
 
-inline Dimensions pow(const Dimensions& dims, Dimensions::value_type exponent) {
+inline constexpr Dimensions pow(const Dimensions& dims,
+                                Dimensions::value_type exponent) {
   return dims.power(exponent);
 }
 
-inline Dimensions sqrt(const Dimensions& dims) { return dims.sqrt(); }
+inline constexpr Dimensions sqrt(const Dimensions& dims) { return dims.sqrt(); }
 
-inline Dimensions cbrt(const Dimensions& dims) { return dims.cbrt(); }
+inline constexpr Dimensions cbrt(const Dimensions& dims) { return dims.cbrt(); }
 
 inline std::ostream& operator<<(std::ostream& stream, const Dimensions& dims) {
   stream << dims.to_string();
@@ -1148,6 +1189,7 @@ struct hash<rtunits::Quantity<T>> {
 
 }  // end namespace std
 
+#undef CONSTEXPR_IF_CPP_2014
 #undef UNITS_THROW
 #undef UNITS_ASSERT
 #undef CONSTEXPR_ASSERT
