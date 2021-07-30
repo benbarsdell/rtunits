@@ -421,6 +421,7 @@ class Quantity {
   static Quantity degree() { return pi() / T(180) * radian(); }
   static Quantity arc_minute() { return degree() / T(60); }
   static Quantity arc_second() { return arc_minute() / T(60); }
+  static Quantity hour_angle() { return T(360 / 24) * degree(); }
   static Quantity hectare() { return T(1e4) * meter().squared(); }
   static Quantity liter() { return T(1e-3) * meter().cubed(); }
   static Quantity metric_tonne() { return T(1e3) * kilogram(); }
