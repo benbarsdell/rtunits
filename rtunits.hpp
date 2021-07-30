@@ -925,6 +925,11 @@ class Quantity {
 
   Quantity units() const { return Quantity(dimensions()); }
 
+  // TODO: Add tests for this.
+  std::string si_units_string() const {
+    return dims_.to_string({"m", "kg", "s", "A", "K", "cd", "mol"});
+  }
+
  private:
   value_type value_;
   Dimensions dims_;
@@ -983,8 +988,7 @@ template <typename T>
 inline std::ostream& operator<<(std::ostream& stream, const Quantity<T>& q) {
   stream << q.magnitude();
   if (q.dimensions()) {
-    stream << " "
-           << q.dimensions().to_string({"m", "kg", "s", "A", "K", "cd", "mol"});
+    stream << " " << q.si_units_string();
   }
   return stream;
 }
