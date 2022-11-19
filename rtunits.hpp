@@ -1174,6 +1174,102 @@ inline bool convert_units(T* magnitude, const std::string& from_units,
   return true;
 }
 
+// TODO: Add tests for this.
+// Represents a specific quantity as a value and a units string.
+template <typename T>
+class SpecificQuantity {
+ public:
+  using value_type = T;
+  using quantity_type = Quantity<T>;
+
+  static SpecificQuantity si_units(const quantity_type& q) {
+    return SpecificQuantity(q.magnitude(), q.si_units_string());
+  }
+
+  SpecificQuantity() = default;
+  SpecificQuantity(value_type _value, std::string _units)
+      : value_(_value), units_(_units) {}
+  // Explicit conversion (requires parsing units string).
+  explicit SpecificQuantity(const quantity_type& q,
+                            const std::string& _units)
+      : value_(q.magnitude(_units)), units_(_units) {}
+
+  //quantity_type quantity() const { return quantity_type(*this); }
+  // **TODO: Really need a way to gracefully handle errors here.  
+  quantity_type parse() const { return quantity_type(value_, units_); }
+
+  bool parse(quantity_type* result) const {
+    bool success = parse_units(units_, result);
+    if (!success) return false;
+    *result *= value_;
+    return true;
+  }
+
+  // Explicit conversion (requires parsing units string).
+  explicit operator quantity_type() const {
+    //return quantity_type(value_, units_);
+    return parse();
+  }
+
+  value_type value() const { return value_; }
+  std::string units_string() const { return units_; }
+
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const SpecificQuantity& quantity) {
+    return os << quantity.value() << " " << quantity.units();
+  }
+
+  std::string to_string() const {
+    std::stringstream ss;
+    ss << *this;
+    return ss.str();
+  }
+
+  SpecificQuantity operator+() const {
+    SpecificQuantity result = *this;
+    result.value_ = +result.value_;
+    return result;
+  }
+  SpecificQuantity operator-() const {
+    SpecificQuantity result = *this;
+    result.value_ = -result.value_;
+    return result;
+  }
+
+  SpecificQuantity& operator*=(const value_type& factor) {
+    value_ *= factor;
+    return *this;
+  }
+
+  SpecificQuantity& operator/=(const value_type& factor) {
+    value_ /= factor;
+    return *this;
+  }
+
+  friend SpecificQuantity operator*(const SpecificQuantity& sq,
+                                    const value_type& factor) {
+    SpecificQuantity result = sq;
+    result *= factor;
+    return result;
+  }
+  friend SpecificQuantity operator*(const value_type& factor,
+                                    const SpecificQuantity& sq) {
+    return sq * factor;
+  }
+  friend SpecificQuantity operator/(const SpecificQuantity& sq,
+                                    const value_type& factor) {
+    SpecificQuantity result = sq;
+    result /= factor;
+    return result;
+  }
+
+ private:
+  value_type value_;
+  std::string units_;  // Physical units in string format
+};
+
+using SpecificQuantity64 = SpecificQuantity<double>;
+
 namespace detail {
 
 // As used in Boost.
