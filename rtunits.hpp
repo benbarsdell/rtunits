@@ -526,7 +526,7 @@ class Quantity {
   static Quantity furman() { return turn() / T(65536.); }
   static Quantity gradian() { return turn() / T(400.); }
   static Quantity shake() { return T(1e-8) * second(); }
-  static Quantity mars_day() { return T(88775) * second(); }
+  static Quantity mars_day() { return T(88775.244/*14688*/) * second(); }
   static Quantity galactic_year() { return T(250e6) * year(); }
   static Quantity kermit() { return T(24 * 60 * 60 / 100.) * second(); }
   static Quantity moment() { return T(90) * second(); }
