@@ -835,7 +835,8 @@ class Quantity {
       : Quantity(value) {
     Quantity q;
     bool units_parsed_successfully = parse_units(units, &q);
-    assert(units_parsed_successfully);
+    UNITS_ASSERT(units_parsed_successfully,
+                 QuantityError("Failed to parse units: " + units));
     (void)units_parsed_successfully;
     *this *= q;
   }
