@@ -767,6 +767,8 @@ class Quantity {
   }
 
   // SI prefixes.
+  static value_type quetta() { return T(1e30); }
+  static value_type ronna() { return T(1e27); }
   static value_type yotta() { return T(1e24); }
   static value_type zetta() { return T(1e21); }
   static value_type exa() { return T(1e18); }
@@ -787,6 +789,8 @@ class Quantity {
   static value_type atto() { return T(1e-18); }
   static value_type zepto() { return T(1e-21); }
   static value_type yocto() { return T(1e-24); }
+  static value_type ronto() { return T(1e-27); }
+  static value_type quecto() { return T(1e-30); }
 
   // Binary prefixes.
   static value_type kibi() { return T(1024); }
@@ -801,13 +805,14 @@ class Quantity {
   // TODO: Consider making these value_type instead of Quantity.
   static const symbol_map_type& prefix_symbol_map() {
     static const symbol_map_type prefixes = {
-        {"Y", yotta()}, {"Z", zetta()}, {"E", exa()},      {"P", peta()},
-        {"T", tera()},  {"G", giga()},  {"M", mega()},     {"k", kilo()},
-        {"h", hecto()}, {"da", deka()}, {"d", deci()},     {"c", centi()},
-        {"m", milli()}, {"u", micro()}, {"\xB5", micro()}, {"n", nano()},
-        {"p", pico()},  {"f", femto()}, {"a", atto()},     {"z", zepto()},
-        {"y", yocto()}, {"Ki", kibi()}, {"Mi", mebi()},    {"Gi", gibi()},
-        {"Ti", tebi()}, {"Pi", pebi()}, {"Ei", exbi()},    {"Zi", zebi()},
+        {"Q", quetta()},   {"R", ronna()}, {"Y", yotta()}, {"Z", zetta()},
+        {"E", exa()},      {"P", peta()},  {"T", tera()},  {"G", giga()},
+        {"M", mega()},     {"k", kilo()},  {"h", hecto()}, {"da", deka()},
+        {"d", deci()},     {"c", centi()}, {"m", milli()}, {"u", micro()},
+        {"\xB5", micro()}, {"n", nano()},  {"p", pico()},  {"f", femto()},
+        {"a", atto()},     {"z", zepto()}, {"y", yocto()}, {"r", ronto()},
+        {"q", quecto()},   {"Ki", kibi()}, {"Mi", mebi()}, {"Gi", gibi()},
+        {"Ti", tebi()},    {"Pi", pebi()}, {"Ei", exbi()}, {"Zi", zebi()},
         {"Yi", yobi()},
     };
     return prefixes;
