@@ -29,6 +29,8 @@
 // TODO: Test all methods and operators of Dimensions and Quantity.
 
 #define RTUNITS_USE_EXCEPTIONS 1
+// TODO: Makes the CI run tests twice, once with this on and once off.
+//#define RTUNITS_USE_EXCEPTIONS 0
 #include "rtunits.hpp"
 
 #include <unordered_set>
@@ -167,16 +169,22 @@ TEST(UnitsTest, Sortable) {
   EXPECT_EQ(qset.size(), 3);
 
   // Can't mix quantities of different dimensions in an ordered set.
+#if RTUNITS_USE_EXCEPTIONS
   EXPECT_THROW(qset.insert(Quantity64::meter()), QuantityError);
+#endif
 }
 
 #define EXPECT_PARSE_Q(symbol, quantity)  \
   EXPECT_EQ(Quantity64(symbol), quantity) \
       << "where " #symbol " = \"" << symbol << "\""
 
+#if RTUNITS_USE_EXCEPTIONS
 #define EXPECT_PARSE_THROW_Q(symbol)                         \
   EXPECT_THROW((void)Quantity64(symbol), QuantityParseError) \
       << "where " #symbol " = \"" << symbol << "\""
+#else
+#define EXPECT_PARSE_THROW_Q(symbol)
+#endif
 
 void test_basic_parsing_with_div(const std::string& symbol,
                                  const Quantity64& quantity) {
