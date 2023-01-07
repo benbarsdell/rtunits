@@ -1276,7 +1276,7 @@ class SpecificQuantity {
   }
 
  private:
-  value_type value_;
+  value_type value_ = value_type(0);
   std::string units_;  // Physical units in string format
 };
 
