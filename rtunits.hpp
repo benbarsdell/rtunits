@@ -38,6 +38,13 @@
 //         int32_t units_multiply(const char* lhs_units, const char* rhs_units,
 //                                uint8_t result_size, char* result);
 // TODO: Try to make Quantity() constexpr.
+// TODO: Add support for rational exponents.
+//         This is useful for some intermediate results, as well as some unusual
+//           units.
+//         Can probably use high bits of dimensions as the denominator, allowing
+//           values up to 7.
+//         Note that parsing will need to support brackets around exponents, as
+//           well as both "3/2" and "1.5" for exponent values.
 
 #pragma once
 
