@@ -493,6 +493,10 @@ class Quantity {
   static Quantity rad() { return T(1e-2) * gray(); }
   static Quantity roentgen_equivalent_man() { return T(1e-2) * sievert(); }
   static Quantity maxwell() { return T(1e-8) * weber(); }
+  static Quantity debye() {
+    return T(1e-21) * coulomb() * meter().squared() / second() /
+           speed_of_light();
+  }
 
   // Misc units.
   static Quantity week() { return T(7) * day(); }
@@ -593,6 +597,11 @@ class Quantity {
   static Quantity jansky() {
     return T(1e-26) * watt() / meter().squared() / hertz();
   }
+  static Quantity rydberg() { return T(13.605693122994) * electronvolt(); }
+  static Quantity rayleigh() {
+    return T(1e10) / (T(4) * pi()) /
+           (meter().squared() * second() * steradian());
+  }
 
   typedef std::unordered_map<std::string, Quantity> symbol_map_type;
 
@@ -644,7 +653,10 @@ class Quantity {
         {"deg", degree()},
         {"\xB0", degree()},  // degree symbol
         {"'", arc_minute()},
+        {"arcmin", arc_minute()},
         {"\"", arc_second()},
+        {"arcsec", arc_second()},
+        {"mas", milli() * arc_second()},
         {"ha", hectare()},
         {"L", liter()},
         {"l", liter()},
@@ -677,6 +689,7 @@ class Quantity {
         {"Msun", solar_mass()},
         {"M_S", solar_mass()},
         {"M\u2609", solar_mass()},  // circle with dot in it
+        {"solMass", solar_mass()},
         {"Mearth", earth_mass()},
         {"M_E", earth_mass()},
         {"M\u2295", earth_mass()},  // circle with plus in it
@@ -685,16 +698,20 @@ class Quantity {
         {"Rsun", solar_radius()},
         {"R_S", solar_radius()},
         {"R\u2609", solar_radius()},  // circle with dot in it
+        {"solRad", solar_radius()},
         {"Rearth", earth_radius()},
         {"R_E", earth_radius()},
         {"R\u2295", earth_radius()},  // circle with plus in it
         {"Rjupiter", jupiter_radius()},
         {"R_J", jupiter_radius()},
         {"ly", light_year()},
+        {"lyr", light_year()},
         {"pc", parsec()},
         {"LD", lunar_distance()},
         {"Lsun", solar_luminosity()},
+        {"solLum", solar_luminosity()},
         {"Jy", jansky()},
+        {"Ry", rydberg()},
         // CGS units.
         {"Gal", gal()},
         {"dyn", dyne()},
@@ -710,6 +727,7 @@ class Quantity {
         {"rd", rad()},
         {"rem", roentgen_equivalent_man()},
         {"Mx", maxwell()},
+        {"D", debye()},
         // Misc units.
         {"wk", week()},
         {"psi", pounds_per_square_inch()},
@@ -719,7 +737,8 @@ class Quantity {
         {"DU", dobson_unit()},
         {"fur", furlong()},
         {"hp", horsepower()},
-        {"R", roentgen()},
+        //{"R", roentgen()},  // Not supported due to Rayleigh using R
+        {"R", rayleigh()},
         {"U", rack_unit()},
         {"tr", turn()},
         {"rev", turn()},
