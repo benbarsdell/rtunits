@@ -200,12 +200,11 @@ void test_basic_parsing(const std::string& symbol, const Quantity64& quantity) {
     test_basic_parsing_with_div(symbol + esym + "0", 1.);
     test_basic_parsing_with_div(symbol + esym + "1", quantity);
     test_basic_parsing_with_div(symbol + esym + "2", quantity.squared());
+
     test_basic_parsing_with_div(symbol + esym + "3", quantity.cubed());
     test_basic_parsing_with_div(symbol + esym + "-1", quantity.reciprocal());
-    test_basic_parsing_with_div(symbol + esym + "-2",
-                                quantity.reciprocal().squared());
-    test_basic_parsing_with_div(symbol + esym + "-3",
-                                quantity.reciprocal().cubed());
+    test_basic_parsing_with_div(symbol + esym + "-2", quantity.power(-2));
+    test_basic_parsing_with_div(symbol + esym + "-3", quantity.power(-3));
   }
 }
 
