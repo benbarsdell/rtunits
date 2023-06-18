@@ -992,9 +992,15 @@ class Quantity {
 
   Quantity cubed() const { return power(3); }
 
-  Quantity sqrt() const { return Quantity(::sqrt(value_), dims_.sqrt()); }
+  Quantity sqrt() const {
+    using std::sqrt;
+    return Quantity(sqrt(value_), dims_.sqrt());
+  }
 
-  Quantity cbrt() const { return Quantity(::cbrt(value_), dims_.cbrt()); }
+  Quantity cbrt() const {
+    using std::cbrt;
+    return Quantity(cbrt(value_), dims_.cbrt());
+  }
 
   Quantity units() const { return Quantity(dimensions()); }
 
@@ -1044,7 +1050,8 @@ inline Quantity<T> pow(const Quantity<T>& quantity,
 
 template <typename T>
 inline Quantity<T> fabs(const Quantity<T>& quantity) {
-  return Quantity<T>(::fabs(quantity.magnitude()), quantity.dimensions());
+  using std::fabs;
+  return Quantity<T>(fabs(quantity.value_si()), quantity.dimensions());
 }
 
 template <typename T>
