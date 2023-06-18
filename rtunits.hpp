@@ -54,12 +54,18 @@
 #include <cmath>
 #include <functional>
 #include <iostream>
-#include <regex>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
+
+// Note: boost::regex is 4-8x faster than std::regex for units parsing.
+#if RTUNITS_USE_BOOST_REGEX
+#include <boost/regex.hpp>
+#else
+#include <regex>
+#endif
 
 // This macro and the associated helper class come from here:
 // https://gist.github.com/oliora/928424f7675d58fadf49c70fdba70d2f
@@ -1145,7 +1151,17 @@ inline bool contains_nonseparator_char(const std::string& str) {
 // Returns false on error, or throws an exception if RTUNITS_USE_EXCEPTIONS=1.
 // Valid separator symbols are: whitespace, asterisk, comma, middot, times.
 template <typename T>
-inline bool parse_units(const std::string& str, Quantity<T>* result_ptr) {
+inline bool parse_units(const char* units_str, size_t units_length,
+                        Quantity<T>* result_ptr) {
+  if (!units_str) return false;
+  if (!result_ptr) return false;
+#if RTUNITS_USE_BOOST_REGEX
+  using boost::regex;
+  using boost::regex_iterator;
+#else
+  using std::regex;
+  using std::regex_iterator;
+#endif
   // TODO: Add support for a numerical scale factor prefix.
   // This uses a regex to match each unit with the form:
   //   [division_symbol] [prefix] unit [exponent_symbol] [exponent]
@@ -1153,7 +1169,7 @@ inline bool parse_units(const std::string& str, Quantity<T>* result_ptr) {
   // a separator symbol (or a division symbol).
   // Note that the regex is applied in reverse so that units are matched first
   // before prefixes.
-  static const std::regex re = []() {
+  static const regex re = []() {
     const std::string div_symbol = R"((\/)?)";
     const std::string ws = R"(\s*)";  // whitespace
     const std::string exp_symbol = R"((\*\*|\^)?)";
@@ -1169,27 +1185,31 @@ inline bool parse_units(const std::string& str, Quantity<T>* result_ptr) {
     const std::string unit_boundary = R"((?=[\s*,\/\xB7\xD7]|$))";
     const std::string unit =
         detail::make_reverse_regex_from_keys<T>(Quantity<T>::unit_symbol_map());
-    return std::regex(exponent + ws + exp_symbol + ws + unit + prefix +
-                      unit_boundary + ws + div_symbol);
+    return regex(exponent + ws + exp_symbol + ws + unit + prefix +
+                 unit_boundary + ws + div_symbol);
   }();
-  if (detail::is_whitespace(str)) {
+  if (detail::is_whitespace(units_str)) {
     *result_ptr = Quantity<T>(Dimensions::None());
     return true;
   }
-  using regex_iter = std::sregex_iterator;
   Quantity<T> result(1);
-  std::string rstr = detail::reverse(str);
-  auto it = regex_iter(rstr.begin(), rstr.end(), re);
-  bool any_units_matched = it != regex_iter();
+  using reverse_iter = std::reverse_iterator<const char*>;
+  auto rbegin = reverse_iter(units_str + units_length);
+  auto rend = reverse_iter(units_str);
+  using regex_iter = regex_iterator<reverse_iter>;
+  using match_type = typename regex_iter::value_type;
+  auto it = regex_iter(rbegin, rend, re);
+  const bool any_units_matched = it != regex_iter();
   if (!any_units_matched) {
     return UNITS_THROW(QuantityParseError("No units matched in string: \"" +
-                                          str + "\"")),
+                                          std::string(units_str, units_length) +
+                                          "\"")),
            false;
   }
   regex_iter last_it;
   for (; it != regex_iter(); ++it) {
     last_it = it;
-    const std::smatch& match = *it;
+    const match_type& match = *it;
     if (detail::contains_nonseparator_char(match.prefix().str())) {
       std::string fail_str = detail::reverse(match.prefix().str());
       return UNITS_THROW(
@@ -1203,10 +1223,10 @@ inline bool parse_units(const std::string& str, Quantity<T>* result_ptr) {
              false;
     }
     int m0 = 1;
-    std::string div_symbol = detail::reverse(match[m0 + 4]);
-    std::string prefix = detail::reverse(match[m0 + 3]);
-    std::string unit = detail::reverse(match[m0 + 2]);
-    std::string exponent_str = detail::reverse(match[m0 + 0]);
+    std::string div_symbol = detail::reverse(match[(size_t)(m0 + 4)]);
+    std::string prefix = detail::reverse(match[(size_t)(m0 + 3)]);
+    std::string unit = detail::reverse(match[(size_t)(m0 + 2)]);
+    std::string exponent_str = detail::reverse(match[(size_t)(m0 + 0)]);
     Quantity<T> term(1);
     term *= Quantity<T>::unit_symbol_map().at(unit);
     if (!prefix.empty()) {
