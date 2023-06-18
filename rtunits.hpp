@@ -450,17 +450,17 @@ class Quantity {
   static Quantity hectare() { return T(1e4) * meter().squared(); }
   static Quantity liter() { return T(1e-3) * meter().cubed(); }
   static Quantity metric_tonne() { return T(1e3) * kilogram(); }
-  static Quantity dalton() { return T(1.660539040e-27) * kilogram(); }
+  static Quantity dalton() { return T(1.66053906660e-27) * kilogram(); }
   static Quantity electronvolt() { return T(1.602176634e-19) * joule(); }
   static Quantity speed_of_light() { return T(299792458) * meter() / second(); }
   static Quantity reduced_planck_constant() {
-    return T(1.05457168e-34) * joule() * second();
+    return T(1.054571817e-34) * joule() * second();
   }
-  static Quantity electron_mass() { return T(9.1093826e-31) * kilogram(); }
-  static Quantity elementary_charge() { return T(1.60217653e-19) * coulomb(); }
-  static Quantity planck_time() { return T(1.2880886677e-21) * second(); }
-  static Quantity bohr_radius() { return T(5.291772108e-11) * meter(); }
-  static Quantity hartree_energy() { return T(4.35974417e-18) * joule(); }
+  static Quantity electron_mass() { return T(9.1093837015e-31) * kilogram(); }
+  static Quantity elementary_charge() { return T(1.602176634e-19) * coulomb(); }
+  static Quantity planck_time() { return T(5.391247e-44) * second(); }
+  static Quantity bohr_radius() { return T(5.29177210903e-11) * meter(); }
+  static Quantity hartree_energy() { return T(4.3597447222071e-18) * joule(); }
 
   // Unofficial units.
   static Quantity angstrom() { return T(1e-10) * meter(); }
@@ -561,7 +561,7 @@ class Quantity {
     return T(9.806650) * meter() / second().squared();
   }
   static Quantity vacuum_permeability() {
-    return T(4e-7) * pi() * newton() / ampere().squared();
+    return T(1.25663706212e-6) * newton() / ampere().squared();
   }
   static Quantity vacuum_permittivity() {
     return (vacuum_permeability() * speed_of_light().squared()).reciprocal();
@@ -570,18 +570,18 @@ class Quantity {
     return vacuum_permeability() * speed_of_light();
   }
   static Quantity gravitational_constant() {
-    return T(6.67408e-11) * meter().cubed() / kilogram() / second().squared();
+    return T(6.67430e-11) * meter().cubed() / kilogram() / second().squared();
   }
-  static Quantity avogadro_number() { return T(6.02214129e23) / mole(); }
+  static Quantity avogadro_number() { return T(6.02214076e23) / mole(); }
   static Quantity boltzmann_constant() {
-    return T(1.3806488e-23) * joule() / kelvin();
+    return T(1.380649e-23) * joule() / kelvin();
   }
   static Quantity stefan_boltzmann_constant() {
-    return T(5.670373e-8) * watt() / meter().squared() /
+    return T(5.670374419e-8) * watt() / meter().squared() /
            kelvin().squared().squared();
   }
-  static Quantity neutron_mass() { return T(1.674927351e-27) / kilogram(); }
-  static Quantity proton_mass() { return T(1.672621777e-27) / kilogram(); }
+  static Quantity neutron_mass() { return T(1.67492749804e-27) * kilogram(); }
+  static Quantity proton_mass() { return T(1.67262192369e-27) * kilogram(); }
 
   // Astronomy units.
   static Quantity solar_mass() { return T(1.98847e30) * kilogram(); }
