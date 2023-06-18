@@ -688,6 +688,7 @@ class Quantity {
         {"year", year()},
         {"yr", year()},
         // Astronomy units.
+#if !RTUNITS_NO_ASTRONOMY_UNITS
         {"Msun", solar_mass()},
         {"M_S", solar_mass()},
         {"M\u2609", solar_mass()},  // circle with dot in it
@@ -716,6 +717,8 @@ class Quantity {
         {"Ry", rydberg()},
         {"SNR", snr()},
         {"S/N", snr()},
+#endif  // !RTUNITS_NO_ASTRONOMY_UNITS
+#if !RTUNITS_NO_CGS_UNITS
         // CGS units.
         {"Gal", gal()},
         {"dyn", dyne()},
@@ -732,6 +735,8 @@ class Quantity {
         {"rem", roentgen_equivalent_man()},
         {"Mx", maxwell()},
         {"D", debye()},
+#endif  // !RTUNITS_NO_CGS_UNITS
+#if !RTUNITS_NO_MISC_UNITS
         // Misc units.
         {"wk", week()},
         {"psi", pounds_per_square_inch()},
@@ -793,6 +798,7 @@ class Quantity {
         {"m_p", proton_mass()},
         {"G", gravitational_constant()},
         {"slug", slug()},
+#endif  // !RTUNITS_NO_MISC_UNITS
     };
     return units;
   }
