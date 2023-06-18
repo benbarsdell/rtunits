@@ -1,6 +1,7 @@
 # RT-Units
 
-[![Build Status](https://travis-ci.com/benbarsdell/rtunits.svg?branch=master)](https://travis-ci.com/benbarsdell/rtunits)
+[![Build Status](https://github.com/benbarsdell/rtunits/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/benbarsdell/rtunits/actions?query=workflow%3ACI)
+
 
 RT-Units - A single-header C++11 library for working with physical
 quantities at runtime, including support for parsing and

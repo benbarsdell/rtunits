@@ -1,0 +1,27 @@
+name: CI
+on: [push, pull_request]
+env:
+  BUILD_TYPE: Release
+jobs:
+  build-and-test:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [linux]
+        compiler:
+          - {compiler: GNU,  CC: gcc,   CXX: g++}
+          - {compiler: LLVM, CC: clang, CXX: clang++ }
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install packages
+        run: sudo apt-get install -y clang
+      - name: Run cmake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        env:
+          CXXFLAGS: -Werror
+          CC: ${{matrix.compiler.CC}}
+          CXX: ${{matrix.compiler.CXX}}
+      - name: Build and test
+        working-directory: ${{github.workspace}}/build
+        run: make check
