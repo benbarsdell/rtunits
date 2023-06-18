@@ -1065,6 +1065,17 @@ inline Quantity<T> cbrt(const Quantity<T>& quantity) {
 }
 
 template <typename T>
+inline Quantity<T> fmod(const Quantity<T>& quantity, const Quantity<T>& size) {
+  UNITS_ASSERT(quantity.dimensions() == size.dimensions(),
+               QuantityError("Dimension mismatch in fmod: " +
+                             quantity.dimensions().to_string(true) + " vs. " +
+                             size.dimensions().to_string(true)));
+  using std::fmod;
+  return Quantity<T>(fmod(quantity.value_si(), size.value_si()),
+                     quantity.dimensions());
+}
+
+template <typename T>
 inline std::ostream& operator<<(std::ostream& stream, const Quantity<T>& q) {
   stream << q.magnitude();
   if (q.dimensions()) {

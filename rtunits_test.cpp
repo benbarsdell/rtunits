@@ -78,6 +78,7 @@ TEST(UnitsTest, QuantityArithmetic) {
     EXPECT_QUANT_EQ(sqrt(q.squared()), q);
     EXPECT_QUANT_EQ(cbrt(q.cubed()), q);
     EXPECT_QUANT_EQ(q.power(4).fractional_power(4), q);
+    EXPECT_QUANT_EQ(fmod(q * 1.25, q), q * 0.25);
     Quantity64 qmut = q;
     qmut *= q;
     qmut += q * q;
