@@ -368,6 +368,8 @@ class Dimensions {
       : exponents_({length_, mass_, time_, current_, temperature_, luminosity_,
                     amount_}) {}
 
+  void _war_unused_private_field_warning() const { (void)padding_byte_; }
+
   array_type exponents_;
   value_type padding_byte_ = 0;
 };
@@ -398,6 +400,8 @@ inline std::ostream& operator<<(std::ostream& stream, const Dimensions& dims) {
 
 static_assert(std::is_standard_layout<Dimensions>::value,
               "Internal error: Dimensions is not standard layout");
+static_assert(sizeof(Dimensions) == 8,
+              "Internal error: Dimensions is not exactly 8 bytes");
 
 template <typename T>
 class Quantity {

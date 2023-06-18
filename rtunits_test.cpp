@@ -292,7 +292,7 @@ void test_multi_parsing(std::initializer_list<std::string> symbols,
       for (const auto& sep :
            {" ", "  ", "\t", "*", ",", " * ", " , ", middot, times}) {
         std::string combined_symbol = leading_ws;
-        for (const std::string symbol : symbols) {
+        for (const std::string& symbol : symbols) {
           combined_symbol += symbol + sep;
         }
         combined_symbol += trailing_ws;
@@ -305,7 +305,7 @@ void test_multi_parsing(std::initializer_list<std::string> symbols,
       if (check_with_bad_separators) {
         for (const auto& bad_sep : {"", ".", "-", "&", "|"}) {
           std::string combined_symbol = leading_ws;
-          for (const std::string symbol : symbols) {
+          for (const std::string& symbol : symbols) {
             combined_symbol += symbol + bad_sep;
           }
           combined_symbol += trailing_ws;
