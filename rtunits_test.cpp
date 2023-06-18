@@ -242,6 +242,28 @@ TEST(UnitsTest, BasicParsing) {
   test_basic_parsing("kat", Quantity64::katal());
 }
 
+TEST(UnitsTest, UnicodeParsing) {
+  test_basic_parsing("\u00B0", Quantity64::degree());
+  test_basic_parsing("\u2032", Quantity64::arc_minute());
+  test_basic_parsing("\u2033", Quantity64::arc_second());
+  test_basic_parsing(
+      "\u00B5"
+      "as",
+      Quantity64::micro() * Quantity64::arc_second());
+  test_basic_parsing(
+      "\u00B5"
+      "\u2033",
+      Quantity64::micro() * Quantity64::arc_second());
+  test_basic_parsing("\u00C5", Quantity64::angstrom());
+  test_basic_parsing("M\u2609", Quantity64::solar_mass());
+  test_basic_parsing("R\u2295", Quantity64::earth_radius());
+
+  EXPECT_PARSE_Q(
+      "\u00B0"
+      "/\u2103",
+      Quantity64::degree() / Quantity64::degree_celsius());
+}
+
 TEST(UnitsTest, InvalidParsing) {
   for (const auto& unit_item : Quantity64::unit_symbol_map()) {
     const std::string& unit_str = unit_item.first;

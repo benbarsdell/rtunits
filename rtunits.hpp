@@ -639,9 +639,10 @@ class Quantity {
         {"T", tesla()},
         {"H", henry()},
         {"degC", degree_celsius()},
-        {"\xB0"  // degree symbol
+        {"\u00B0"  // degree symbol
          "C",
          degree_celsius()},
+        {"\u2103", degree_celsius()},  // degree Celsius symbol
         {"lm", lumen()},
         {"lx", lux()},
         {"Bq", becquerel()},
@@ -653,12 +654,16 @@ class Quantity {
         {"h", hour()},
         {"day", day()},  // Can't use "d" because of candela vs. centi-days.
         {"deg", degree()},
-        {"\xB0", degree()},  // degree symbol
+        {"\u00B0", degree()},  // degree symbol
         {"'", arc_minute()},
+        {"\u2032", arc_minute()},  // prime symbol
         {"arcmin", arc_minute()},
         {"\"", arc_second()},
+        {"\u2033", arc_second()},  // double prime symbol
         {"arcsec", arc_second()},
         {"mas", milli() * arc_second()},
+        {"\u00B5"  // micro (mu) symbol
+         "as", micro() * arc_second()},
         {"ha", hectare()},
         {"L", liter()},
         {"l", liter()},
@@ -676,7 +681,7 @@ class Quantity {
         // Unofficial units.
         {"Angstrom", angstrom()},
         {"\u212B", angstrom()},  // angstrom symbol
-        {"\xC5", angstrom()},    // letter A with circle over it
+        {"\u00C5", angstrom()},    // letter A with circle over it
         {"are", are()},
         {"b", barn()},
         {"bar", bar()},
@@ -846,7 +851,7 @@ class Quantity {
         {"E", exa()},      {"P", peta()},  {"T", tera()},  {"G", giga()},
         {"M", mega()},     {"k", kilo()},  {"h", hecto()}, {"da", deka()},
         {"d", deci()},     {"c", centi()}, {"m", milli()}, {"u", micro()},
-        {"\xB5", micro()}, {"n", nano()},  {"p", pico()},  {"f", femto()},
+        {"\u00B5", micro()}, {"n", nano()},  {"p", pico()},  {"f", femto()},
         {"a", atto()},     {"z", zepto()}, {"y", yocto()}, {"r", ronto()},
         {"q", quecto()},   {"Ki", kibi()}, {"Mi", mebi()}, {"Gi", gibi()},
         {"Ti", tebi()},    {"Pi", pebi()}, {"Ei", exbi()}, {"Zi", zebi()},
@@ -1158,6 +1163,8 @@ inline bool parse_units(const std::string& str, Quantity<T>* result_ptr) {
                                "?";
     // Positive lookahead to ensure that the next symbol is a separator (or
     // division symbol).
+    // Note: We can't support multi-byte (i.e., unicode) characters in the
+    // lookahead, so we use the Latin-1 middot and times symbols.
     // \xB7 = middle dot, \xD7 == multiplication sign.
     const std::string unit_boundary = R"((?=[\s*,\/\xB7\xD7]|$))";
     const std::string unit =
