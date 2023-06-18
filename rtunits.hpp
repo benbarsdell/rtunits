@@ -602,6 +602,8 @@ class Quantity {
     return T(1e10) / (T(4) * pi()) /
            (meter().squared() * second() * steradian());
   }
+  static Quantity snr() { return number(); }  // Signal-to-noise ratio
+  static Quantity slug() { return T(14.59390) * kilogram(); }
 
   typedef std::unordered_map<std::string, Quantity> symbol_map_type;
 
@@ -712,6 +714,8 @@ class Quantity {
         {"solLum", solar_luminosity()},
         {"Jy", jansky()},
         {"Ry", rydberg()},
+        {"SNR", snr()},
+        {"S/N", snr()},
         // CGS units.
         {"Gal", gal()},
         {"dyn", dyne()},
@@ -788,6 +792,7 @@ class Quantity {
         {"m_n", neutron_mass()},
         {"m_p", proton_mass()},
         {"G", gravitational_constant()},
+        {"slug", slug()},
     };
     return units;
   }
