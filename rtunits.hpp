@@ -1223,6 +1223,17 @@ inline bool parse_units(const std::string& str, Quantity<T>* result_ptr) {
   return true;
 }
 
+template <typename T>
+inline bool parse_units(const char* units_str, Quantity<T>* result_ptr) {
+  if (!units_str) return false;
+  return parse_units(units_str, std::strlen(units_str), result_ptr);
+}
+
+template <typename T>
+inline bool parse_units(const std::string& units_str, Quantity<T>* result_ptr) {
+  return parse_units(units_str.data(), units_str.size(), result_ptr);
+}
+
 // Returns false on error, or throws an exception if RTUNITS_USE_EXCEPTIONS=1.
 template <typename T>
 inline bool convert_units(T* magnitude, const std::string& from_units,
