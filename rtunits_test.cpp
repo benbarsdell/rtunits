@@ -58,12 +58,12 @@ TEST(UnitsTest, DimensionsArithmetic) {
   }
 }
 
-#define EXPECT_QUANT_EQ(_lhs, _rhs)                         \
-  do {                                                      \
-    const auto& lhs = (_lhs);                               \
-    const auto& rhs = (_rhs);                               \
-    EXPECT_EQ((lhs).dimensions(), (rhs).dimensions());      \
-    EXPECT_DOUBLE_EQ((lhs).magnitude(), (rhs).magnitude()); \
+#define EXPECT_QUANT_EQ(_lhs, _rhs)                       \
+  do {                                                    \
+    const auto& lhs = (_lhs);                             \
+    const auto& rhs = (_rhs);                             \
+    EXPECT_EQ((lhs).dimensions(), (rhs).dimensions());    \
+    EXPECT_DOUBLE_EQ((lhs).value_si(), (rhs).value_si()); \
   } while (0)
 
 TEST(UnitsTest, QuantityArithmetic) {
@@ -175,9 +175,10 @@ TEST(UnitsTest, Sortable) {
 #endif
 }
 
-#define EXPECT_PARSE_Q(symbol, quantity)  \
-  EXPECT_EQ(Quantity64(symbol), quantity) \
-      << "where " #symbol " = \"" << symbol << "\""
+#define EXPECT_PARSE_Q(symbol, quantity)    \
+  EXPECT_EQ(Quantity64(symbol), quantity)   \
+      << "where " #symbol " = \"" << symbol \
+      << "\", error = " << fabs(Quantity64(symbol) - quantity);
 
 #if RTUNITS_USE_EXCEPTIONS
 #define EXPECT_PARSE_THROW_Q(symbol)                         \

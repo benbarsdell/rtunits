@@ -866,7 +866,7 @@ class Quantity {
     return prefixes;
   }
 
-  Quantity() : value_() {}
+  Quantity() : value_(), dims_() {}
 
   // Allow implicit conversion from value_type (dimensionless).
   Quantity(const value_type& value) : value_(value), dims_() {}
@@ -874,13 +874,20 @@ class Quantity {
   // Allow implicit conversion from Dimensions (unit magnitude).
   Quantity(const Dimensions& dims) : value_(1), dims_(dims) {}
 
-  Quantity(const value_type& value, const Dimensions& dims)
-      : value_(value), dims_(dims) {}
+  Quantity(const value_type& si_value, const Dimensions& dims)
+      : value_(si_value), dims_(dims) {}
 
   explicit Quantity(const std::string& units) {
-    bool units_parsed_successfully = parse_units(units, this);
+    const bool units_parsed_successfully = parse_units(units, this);
     UNITS_ASSERT(units_parsed_successfully,
                  QuantityError("Failed to parse units: " + units));
+    (void)units_parsed_successfully;
+  }
+
+  explicit Quantity(const char* units) {
+    const bool units_parsed_successfully = parse_units(units, this);
+    UNITS_ASSERT(units_parsed_successfully,
+                 QuantityError("Failed to parse units: " + std::string(units)));
     (void)units_parsed_successfully;
   }
 
@@ -894,18 +901,57 @@ class Quantity {
     *this *= q;
   }
 
-  const value_type& magnitude() const { return value_; }
-
-  value_type magnitude(const Quantity& in_units) const {
-    UNITS_ASSERT(
-        in_units.dimensions() == dimensions(),
-        QuantityError("Dimension mismatch: " + dimensions().to_string(true) +
-                      " vs. " + in_units.dimensions().to_string(true)));
-    return static_cast<value_type>(*this / in_units);
+  Quantity(const value_type& value, const char* units)
+      : Quantity(value) {
+    Quantity q;
+    bool units_parsed_successfully = parse_units(units, &q);
+    UNITS_ASSERT(units_parsed_successfully,
+                 QuantityError("Failed to parse units: " + std::string(units)));
+    (void)units_parsed_successfully;
+    *this *= q;
   }
 
-  value_type magnitude(const std::string& in_units) const {
-    return magnitude(Quantity(in_units));
+  // Returns the value of the quantity in SI units.
+  // Fun fact: This can't be named "si_value" because POSIX defines a macro with
+  // the same name (in fact it reserves any use of the prefix "si_").
+  const value_type& value_si() const { return value_; }
+
+  // Returns the value of the quantity in the given units.
+  value_type value(const Quantity& desired_units) const {
+    UNITS_ASSERT(
+        desired_units.dimensions() == dimensions(),
+        QuantityError("Dimension mismatch: " + dimensions().to_string(true) +
+                      " vs. " + desired_units.dimensions().to_string(true)));
+    return static_cast<value_type>(*this / desired_units);
+  }
+
+  value_type value(const std::string& desired_units) const {
+    return value(Quantity(desired_units));
+  }
+
+  value_type value(const char* desired_units) const {
+    return value(Quantity(desired_units));
+  }
+
+#if __cplusplus >= 201402L
+  [[deprecated("Use .value_si() instead.")]]
+#endif
+  const value_type&
+  magnitude() const {
+    return value();
+  }
+#if __cplusplus >= 201402L
+  [[deprecated("Use .value() instead.")]]
+#endif
+  const value_type&
+  magnitude(const Quantity& desired_units) const {
+    return value(desired_units);
+  }
+#if __cplusplus >= 201402L
+  [[deprecated("Use .value() instead.")]]
+#endif
+  value_type magnitude(const std::string& desired_units) const {
+    return magnitude(Quantity(desired_units));
   }
 
   const Dimensions& dimensions() const { return dims_; }
@@ -955,16 +1001,18 @@ class Quantity {
 
   Quantity& operator+=(const Quantity& rhs) {
     UNITS_ASSERT(dims_ == rhs.dims_,
-                 QuantityError("Dimension mismatch: " + dims_.to_string(true) +
-                               " vs. " + rhs.dims_.to_string(true)));
+                 QuantityError("Dimension mismatch in operator+=: " +
+                               dims_.to_string(true) + " vs. " +
+                               rhs.dims_.to_string(true)));
     value_ += rhs.value_;
     return *this;
   }
 
   Quantity& operator-=(const Quantity& rhs) {
     UNITS_ASSERT(dims_ == rhs.dims_,
-                 QuantityError("Dimension mismatch: " + dims_.to_string(true) +
-                               " vs. " + rhs.dims_.to_string(true)));
+                 QuantityError("Dimension mismatch in operator-=: " +
+                               dims_.to_string(true) + " vs. " +
+                               rhs.dims_.to_string(true)));
     value_ -= rhs.value_;
     return *this;
   }
@@ -1013,7 +1061,7 @@ class Quantity {
     return Quantity(cbrt(value_), dims_.cbrt());
   }
 
-  Quantity units() const { return Quantity(dimensions()); }
+  Quantity si_units() const { return Quantity(dimensions()); }
 
   // TODO: Add tests for this.
   std::string si_units_string() const {
@@ -1021,7 +1069,7 @@ class Quantity {
   }
 
  private:
-  value_type value_;
+  value_type value_;  // TODO: Should rename to magnitude_?
   Dimensions dims_;
 };
 
@@ -1088,7 +1136,7 @@ inline Quantity<T> fmod(const Quantity<T>& quantity, const Quantity<T>& size) {
 
 template <typename T>
 inline std::ostream& operator<<(std::ostream& stream, const Quantity<T>& q) {
-  stream << q.magnitude();
+  stream << q.value_si();
   if (q.dimensions()) {
     stream << " " << q.si_units_string();
   }
@@ -1292,19 +1340,18 @@ class SpecificQuantity {
   using quantity_type = Quantity<T>;
 
   static SpecificQuantity si_units(const quantity_type& q) {
-    return SpecificQuantity(q.magnitude(), q.si_units_string());
+    return SpecificQuantity(q.value_si(), q.si_units_string());
   }
 
   SpecificQuantity() = default;
+  SpecificQuantity(std::string _units)
+      : value_(value_type(1)), units_(std::move(_units)) {}
   SpecificQuantity(value_type _value, std::string _units)
-      : value_(_value), units_(_units) {}
+      : value_(_value), units_(std::move(_units)) {}
   // Explicit conversion (requires parsing units string).
-  explicit SpecificQuantity(const quantity_type& q,
-                            const std::string& _units)
-      : value_(q.magnitude(_units)), units_(_units) {}
+  explicit SpecificQuantity(const quantity_type& q, std::string _units)
+      : value_(q.value(_units)), units_(std::move(_units)) {}
 
-  //quantity_type quantity() const { return quantity_type(*this); }
-  // **TODO: Really need a way to gracefully handle errors here.  
   quantity_type parse() const { return quantity_type(value_, units_); }
 
   bool parse(quantity_type* result) const {
@@ -1316,16 +1363,21 @@ class SpecificQuantity {
 
   // Explicit conversion (requires parsing units string).
   explicit operator quantity_type() const {
-    //return quantity_type(value_, units_);
     return parse();
   }
 
-  value_type value() const { return value_; }
-  std::string units_string() const { return units_; }
+  const value_type& value() const { return value_; }
+  const std::string& units_string() const { return units_; }
+
+  // Returns the same units with a magnitude of 1.
+  SpecificQuantity units() const { return {value_type(1), units_}; }
+
+  // Test if this has a non-zero value.
+  explicit operator bool() const { return value_ != value_type(0); }
 
   friend std::ostream& operator<<(std::ostream& os,
                                   const SpecificQuantity& quantity) {
-    return os << quantity.value() << " " << quantity.units();
+    return os << quantity.value() << " " << quantity.units_string();
   }
 
   std::string to_string() const {
@@ -1409,7 +1461,7 @@ struct hash<::rtunits::Dimensions> {
 template <typename T>
 struct hash<rtunits::Quantity<T>> {
   size_t operator()(const ::rtunits::Quantity<T>& q) const {
-    size_t seed = hash<T>()(q.magnitude());
+    size_t seed = hash<T>()(q.value_si());
     ::rtunits::detail::hash_combine(
         seed, hash<::rtunits::Dimensions>()(q.dimensions()));
     return seed;
