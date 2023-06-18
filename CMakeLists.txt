@@ -2,12 +2,16 @@ cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 
 project(rtunits LANGUAGES CXX C)
 
+add_library(rtunits INTERFACE)
+
+target_include_directories(rtunits INTERFACE .)
+
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
   # TODO: debug/release mode flags.
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
-      -Wall -Wconversion -Wextra -Wshadow -Wpedantic \
+      -Wall -Wconversion -Wsign-conversion -Wextra -Wshadow -Wpedantic \
       -fvisibility=hidden \
       -fmessage-length=80")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
@@ -39,11 +43,17 @@ endif()
 # settings on Windows
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
+# WAR for warnings inside googletest.
+get_property(compile_options DIRECTORY PROPERTY COMPILE_OPTIONS)
+set_property(DIRECTORY APPEND PROPERTY COMPILE_OPTIONS -Wno-conversion)
 # Add googletest directly to our build. This defines
 # the gtest and gtest_main targets.
 add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
                  ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
                  EXCLUDE_FROM_ALL)
+# WAR for warnings inside googletest.
+set_property(DIRECTORY PROPERTY COMPILE_OPTIONS ${compile_options})
+unset(compile_options)
 
 # The gtest/gtest_main targets carry header search path
 # dependencies automatically when using CMake 2.8.11 or
