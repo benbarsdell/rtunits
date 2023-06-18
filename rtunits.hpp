@@ -899,6 +899,9 @@ class Quantity {
 
   const Dimensions& dimensions() const { return dims_; }
 
+  // Test if this has a non-zero value.
+  explicit constexpr operator bool() const { return value_ != value_type(0); }
+
   bool operator==(const Quantity& rhs) const {
     return dims_ == rhs.dims_ && value_ == rhs.value_;
   }
