@@ -130,15 +130,15 @@ TEST(UnitsTest, DimensionsToString) {
   EXPECT_EQ(amount.to_string(), "N");
 
   const auto time_squared = time.squared();
-  EXPECT_EQ(time_squared.to_string(), "T2");
+  EXPECT_EQ(time_squared.to_string(), "T^2");
   const auto inverse_time = time.reciprocal();
-  EXPECT_EQ(inverse_time.to_string(), "T-1");
+  EXPECT_EQ(inverse_time.to_string(), "T^-1");
 
   const auto amount_per_time_squared = amount / time.squared();
-  EXPECT_EQ(amount_per_time_squared.to_string(), "T-2 N");
+  EXPECT_EQ(amount_per_time_squared.to_string(), "T^-2 N");
 
   Dimensions::SymbolArray si_symbols = {"m", "kg", "s", "A", "K", "cd", "mol"};
-  EXPECT_EQ(amount_per_time_squared.to_string(si_symbols), "s-2 mol");
+  EXPECT_EQ(amount_per_time_squared.to_string(si_symbols), "s^-2 mol");
 }
 
 TEST(UnitsTest, Hashable) {

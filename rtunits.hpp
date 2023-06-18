@@ -320,7 +320,7 @@ class Dimensions {
         }
         stream << symbol;
         if (exponent != 1) {
-          stream << exponent;
+          stream << "^" << exponent;
         }
         return true;
       }
